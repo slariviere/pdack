@@ -2,6 +2,6 @@
 
 # pdack
 
-Automatically acknowlege any incomming PagerDuty incident assigned to you.
+Automatically acknowledge any incoming PagerDuty incident assigned to you.
 
 One less thing to worry about during investigation of flapping issues.
