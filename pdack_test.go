@@ -3,6 +3,9 @@ package main
 import (
 	"os"
 	"testing"
+
+	"github.com/BurntSushi/toml"
+	"github.com/stretchr/testify/assert"
 )
 
 var TestFiles = []struct {
@@ -17,8 +20,8 @@ var TestFiles = []struct {
 
 // TestReadConfigFile tests the configuation file is being read correctly
 func TestReadConfigFile(t *testing.T) {
-	var conf PagerDutyConfig
 	pwd, _ := os.Getwd()
+	var conf PagerDutyConfig
 	for _, testFile := range TestFiles {
 		res, _ := readConfigFile(pwd+testFile.filename, &conf)
 		if res != testFile.passing {
@@ -29,4 +32,16 @@ func TestReadConfigFile(t *testing.T) {
 			}
 		}
 	}
+}
+
+// TestgetConfigFile tests the
+func TestGetConfigFile(t *testing.T) {
+	var conf PagerDutyConfig
+	var md toml.MetaData
+	returned_md := getConfigFile(&conf)
+	assert.NotEqual(t, md, returned_md, "The config from the PagerDutyConfig should not be empty")
+}
+
+func TestMain(t *testing.T) {
+	main()
 }

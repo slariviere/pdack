@@ -28,13 +28,19 @@ func readConfigFile(configFileName string, conf *PagerDutyConfig) (success bool,
 	return true, md
 }
 
-func main() {
-	var conf PagerDutyConfig
+func getConfigFile(conf *PagerDutyConfig) (md toml.MetaData) {
 	pwd, _ := os.Getwd()
-	success, md := readConfigFile(pwd+"/pdack.conf", &conf)
+	success, md := readConfigFile(pwd+"/pdack.conf", conf)
 	if success {
 		fmt.Printf("%+v\n", md)
+		return md
 	} else {
 		os.Exit(1)
 	}
+	return md
+}
+
+func main() {
+	var conf PagerDutyConfig
+	getConfigFile(&conf)
 }
