@@ -16,6 +16,8 @@ var TestFiles = []struct {
 	{"/_example/invalid_filename.conf", false},
 	{"/_example/empty.conf", false},
 	{"/_example/missing_email.conf", false},
+	{"/_example/missing_apikey.conf", false},
+	{"/_example/missing_account.conf", false},
 }
 
 // TestReadConfigFile tests the configuation file is being read correctly
