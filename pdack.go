@@ -16,6 +16,13 @@ type PagerDutyConfig struct {
 	account string
 }
 
+// PagerDutyConfigKeys contains all the keys of PagerDutyConfig
+var PagerDutyConfigKeys = []string{
+	"apiKey",
+	"email",
+	"account",
+}
+
 var filename = flag.String("conf", "pdack_sample.conf", "Configuration file")
 
 func readConfigFile(configFileName string, conf *PagerDutyConfig) (success bool, md toml.MetaData) {
@@ -25,7 +32,11 @@ func readConfigFile(configFileName string, conf *PagerDutyConfig) (success bool,
 		return false, md
 	}
 	if len(md.Keys()) < 3 {
-		log.Print("An error occured while reading the configuation file, required key is missing")
+		for _, key := range PagerDutyConfigKeys {
+			if !md.IsDefined(key) {
+				log.Printf("An error occured while reading the configuation file, %s key is missing", key)
+			}
+		}
 		return false, md
 	}
 	return true, md
