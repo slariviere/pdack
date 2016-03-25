@@ -33,7 +33,6 @@ func getConfigFile(conf *PagerDutyConfig) (md toml.MetaData) {
 	success, md := readConfigFile(pwd+"/pdack.conf", conf)
 	if success {
 		fmt.Printf("%+v\n", md)
-		return md
 	} else {
 		os.Exit(1)
 	}
