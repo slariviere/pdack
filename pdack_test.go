@@ -34,14 +34,24 @@ func TestReadConfigFile(t *testing.T) {
 	}
 }
 
-// TestgetConfigFile tests the
-func TestGetConfigFile(t *testing.T) {
+// TestgetConfigFile tests reading the default value of GetConfigFile
+func TestGetConfigFileDefault(t *testing.T) {
 	var conf PagerDutyConfig
 	var md toml.MetaData
 	returnedmd := getConfigFile(&conf)
 	assert.NotEqual(t, md, returnedmd, "The config from the PagerDutyConfig should not be empty")
 }
 
+// TestgetConfigFile tests reading the conf argument
+func TestGetConfigFile(t *testing.T) {
+	var conf PagerDutyConfig
+	var md toml.MetaData
+	os.Args = []string{os.Args[0], "--conf=pdack_sample.conf"}
+	returnedmd := getConfigFile(&conf)
+	assert.NotEqual(t, md, returnedmd, "The config from the PagerDutyConfig should not be empty")
+}
+
+// TestMain tests the main function
 func TestMain(t *testing.T) {
 	main()
 }

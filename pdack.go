@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -15,6 +16,8 @@ type PagerDutyConfig struct {
 	account string
 }
 
+var filename = flag.String("conf", "pdack_sample.conf", "Configuration file")
+
 func readConfigFile(configFileName string, conf *PagerDutyConfig) (success bool, md toml.MetaData) {
 	md, err := toml.DecodeFile(configFileName, *conf)
 	if err != nil {
@@ -22,7 +25,7 @@ func readConfigFile(configFileName string, conf *PagerDutyConfig) (success bool,
 		return false, md
 	}
 	if len(md.Keys()) < 3 {
-		log.Print("An error occured while reading the configuation file, a required key is missing")
+		log.Print("An error occured while reading the configuation file, required key is missing")
 		return false, md
 	}
 	return true, md
@@ -30,7 +33,7 @@ func readConfigFile(configFileName string, conf *PagerDutyConfig) (success bool,
 
 func getConfigFile(conf *PagerDutyConfig) (md toml.MetaData) {
 	pwd, _ := os.Getwd()
-	success, md := readConfigFile(pwd+"/pdack_sample.conf", conf)
+	success, md := readConfigFile(pwd+"/"+*filename, conf)
 	if success {
 		fmt.Printf("%+v\n", md)
 	} else {
@@ -41,5 +44,6 @@ func getConfigFile(conf *PagerDutyConfig) (md toml.MetaData) {
 
 func main() {
 	var conf PagerDutyConfig
+	flag.Parse()
 	getConfigFile(&conf)
 }
