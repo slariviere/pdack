@@ -38,7 +38,7 @@ func TestReadConfigFile(t *testing.T) {
 func TestGetConfigFileDefault(t *testing.T) {
 	var conf PagerDutyConfig
 	var md toml.MetaData
-	returnedmd := getConfigFile(&conf)
+	_, returnedmd := getConfigFile(&conf)
 	assert.NotEqual(t, md, returnedmd, "The config from the PagerDutyConfig should not be empty")
 }
 
@@ -46,12 +46,21 @@ func TestGetConfigFileDefault(t *testing.T) {
 func TestGetConfigFile(t *testing.T) {
 	var conf PagerDutyConfig
 	var md toml.MetaData
-	os.Args = []string{os.Args[0], "--conf=pdack_sample.conf"}
-	returnedmd := getConfigFile(&conf)
-	assert.NotEqual(t, md, returnedmd, "The config from the PagerDutyConfig should not be empty")
+	for _, testFile := range TestFiles {
+		os.Args = []string{os.Args[0], "--conf=" + testFile.filename}
+		res, returnedmd := getConfigFile(&conf)
+		if res != testFile.passing {
+			if testFile.passing {
+				assert.NotEqual(t, md, returnedmd, "The config from the PagerDutyConfig should not be empty")
+			} else {
+				t.Errorf("Expected %s to fail, but it did not", testFile.filename)
+			}
+		}
+	}
 }
 
 // TestMain tests the main function
 func TestMain(t *testing.T) {
+	os.Args = []string{os.Args[0], "--conf=pdack_sample.conf"}
 	main()
 }

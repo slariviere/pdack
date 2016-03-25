@@ -31,19 +31,18 @@ func readConfigFile(configFileName string, conf *PagerDutyConfig) (success bool,
 	return true, md
 }
 
-func getConfigFile(conf *PagerDutyConfig) (md toml.MetaData) {
+func getConfigFile(conf *PagerDutyConfig) (success bool, md toml.MetaData) {
 	pwd, _ := os.Getwd()
-	success, md := readConfigFile(pwd+"/"+*filename, conf)
-	if success {
-		fmt.Printf("%+v\n", md)
-	} else {
-		os.Exit(1)
-	}
-	return md
+	flag.Parse()
+	return readConfigFile(pwd+"/"+*filename, conf)
 }
 
 func main() {
 	var conf PagerDutyConfig
-	flag.Parse()
-	getConfigFile(&conf)
+	success, md := getConfigFile(&conf)
+	if success {
+		fmt.Print(md)
+	} else {
+		os.Exit(1)
+	}
 }
