@@ -30,7 +30,7 @@ func readConfigFile(configFileName string, conf *PagerDutyConfig) (success bool,
 
 func getConfigFile(conf *PagerDutyConfig) (md toml.MetaData) {
 	pwd, _ := os.Getwd()
-	success, md := readConfigFile(pwd+"/pdack.conf", conf)
+	success, md := readConfigFile(pwd+"/pdack_sample.conf", conf)
 	if success {
 		fmt.Printf("%+v\n", md)
 	} else {
