@@ -21,7 +21,7 @@ var TestFiles = []struct {
 	{"/_example/invalid_filename.conf", false, []string{"_example/invalid_filename.conf"}},
 	{"/_example/empty.conf", false, []string{"apiKey", "email", "account"}},
 	{"/_example/missing_email.conf", false, []string{"email"}},
-	{"/_example/missing_apikey.conf", false, []string{"apiKey"}},
+	{"/_example/missing_apiKey.conf", false, []string{"apiKey"}},
 	{"/_example/missing_account.conf", false, []string{"account"}},
 }
 
