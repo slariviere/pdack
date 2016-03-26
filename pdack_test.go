@@ -35,9 +35,8 @@ func init() {
 // TestReadConfigFile tests the configuation file is being read correctly
 func TestReadConfigFile(t *testing.T) {
 	pwd, _ := os.Getwd()
-	var conf PagerDutyConfig
 	for _, testFile := range TestFiles {
-		res, _ := readConfigFile(pwd+testFile.filename, &conf)
+		_, res := readConfigFile(pwd + testFile.filename)
 		b.Reset()
 		traceBuffer.Flush()
 		// If the result is not the expected result of the test
@@ -61,19 +60,17 @@ func TestReadConfigFile(t *testing.T) {
 
 // TestgetConfigFile tests reading the default value of GetConfigFile
 func TestGetConfigFileDefault(t *testing.T) {
-	var conf PagerDutyConfig
 	var md toml.MetaData
-	_, returnedmd := getConfigFile(&conf)
+	_, returnedmd := getConfigFile()
 	assert.NotEqual(t, md, returnedmd, "The config from the PagerDutyConfig should not be empty")
 }
 
 // TestgetConfigFile tests reading the conf argument
 func TestGetConfigFile(t *testing.T) {
-	var conf PagerDutyConfig
 	var md toml.MetaData
 	for _, testFile := range TestFiles {
 		os.Args = []string{os.Args[0], "--conf=" + testFile.filename}
-		res, returnedmd := getConfigFile(&conf)
+		returnedmd, res := getConfigFile()
 		if res != testFile.passing {
 			if testFile.passing {
 				assert.NotEqual(t, md, returnedmd, "The config from the PagerDutyConfig should not be empty")
