@@ -52,7 +52,7 @@ func TestReadConfigFile(t *testing.T) {
 		if !testFile.passing {
 			for _, errorString := range testFile.errorString {
 				if !strings.Contains(b.String(), errorString) {
-					t.Errorf("Expected %s in the error message, but it's missing", errorString)
+					t.Errorf("Expected %s in the error message, but it's missing: %s", errorString, b.String())
 				}
 			}
 		}
