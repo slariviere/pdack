@@ -67,7 +67,7 @@ func buidIcindentURL() (incidentURL string) {
 	return urlStr
 }
 
-func sendPDRequest() (success bool) {
+func getAssignedPDIncidents() (success bool) {
 	urlStr := buidIcindentURL()
 	req, err := http.NewRequest("GET", urlStr, nil)
 	req.Header.Set("Content-type", "application/json")
@@ -88,10 +88,6 @@ func sendPDRequest() (success bool) {
 		return true
 	}
 	return false
-}
-
-func getAssignedPDIncidents() {
-	sendPDRequest()
 }
 
 func main() {
