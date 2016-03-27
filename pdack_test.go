@@ -82,7 +82,9 @@ func TestGetConfigFile(t *testing.T) {
 }
 
 // TestMain tests the main function
+/*
 func TestMain(t *testing.T) {
 	os.Args = []string{os.Args[0], "--conf=pdack_sample.conf"}
 	main()
 }
+*/

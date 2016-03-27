@@ -2,7 +2,11 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
 	"os"
 
 	"github.com/BurntSushi/toml"
@@ -48,7 +52,46 @@ func getConfigFile() (md toml.MetaData, success bool) {
 	return readConfigFile(pwd + "/" + *filename)
 }
 
+func getPDURL() (url string) {
+	return "https://" + config.Account + ".pagerduty.com"
+}
+
+func buidIcindentURL() (incidentURL string) {
+	resource := "/api/v1/incidents"
+	data := url.Values{}
+
+	u, _ := url.ParseRequestURI(getPDURL())
+	u.Path = resource
+	u.RawQuery = data.Encode()
+	urlStr := fmt.Sprintf("%v", u)
+	return urlStr
+}
+
+func sendPDRequest() (success bool) {
+	urlStr := buidIcindentURL()
+	req, err := http.NewRequest("GET", urlStr, nil)
+	req.Header.Set("Content-type", "application/json")
+	req.Header.Add("Authorization", "Token token="+config.APIKey)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	fmt.Println("response Status:", resp.Status)
+	fmt.Println("response Headers:", resp.Header)
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println("response Body:", string(body))
+	if resp.StatusCode == 200 {
+		return true
+	}
+	return false
+}
+
 func getAssignedPDIncidents() {
+	sendPDRequest()
 }
 
 func main() {
