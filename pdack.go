@@ -165,7 +165,7 @@ func acknowledgeIncicent(id string) (success bool) {
 		panic(err)
 	}
 	defer resp.Body.Close()
-	if resp.Status == "200" {
+	if resp.StatusCode == 200 {
 		return true
 	}
 	return false
