@@ -19,8 +19,8 @@ var TestFiles = []struct {
 }{
 	{"/pdack_sample.conf", true, []string{""}},
 	{"/_example/invalid_filename.conf", false, []string{"_example/invalid_filename.conf"}},
-	{"/_example/empty.conf", false, []string{"apiKey", "email", "account"}},
-	{"/_example/missing_email.conf", false, []string{"email"}},
+	{"/_example/empty.conf", false, []string{"apiKey", "userID", "account"}},
+	{"/_example/missing_email.conf", false, []string{"userID"}},
 	{"/_example/missing_apiKey.conf", false, []string{"apiKey"}},
 	{"/_example/missing_account.conf", false, []string{"account"}},
 }
@@ -86,7 +86,7 @@ func TestGetPDURL(t *testing.T) {
 }
 
 func TestBuidIcindentURL(t *testing.T) {
-	assert.Equal(t, buidIcindentURL(), "https://"+config.Account+".pagerduty.com/api/v1/incidents", "Invalid url returned by getPDURL")
+	assert.Equal(t, buidIcindentURL(), "https://"+config.Account+".pagerduty.com/api/v1/incidents?assigned_to_user=XXXXXXX", "Invalid url returned by getPDURL")
 }
 
 // TestMain tests the main function

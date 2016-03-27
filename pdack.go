@@ -15,14 +15,14 @@ import (
 // PagerDutyConfig contains all the PagerDuty required information
 type PagerDutyConfig struct {
 	APIKey  string
-	Email   string
+	UserID  string
 	Account string
 }
 
 // PagerDutyConfigKeys contains all the keys of PagerDutyConfig
 var PagerDutyConfigKeys = []string{
 	"apiKey",
-	"email",
+	"userID",
 	"account",
 }
 
@@ -59,6 +59,7 @@ func getPDURL() (url string) {
 func buidIcindentURL() (incidentURL string) {
 	resource := "/api/v1/incidents"
 	data := url.Values{}
+	data.Add("assigned_to_user", config.UserID)
 
 	u, _ := url.ParseRequestURI(getPDURL())
 	u.Path = resource
