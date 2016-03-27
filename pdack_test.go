@@ -81,6 +81,14 @@ func TestGetConfigFile(t *testing.T) {
 	}
 }
 
+func TestGetPDURL(t *testing.T) {
+	assert.Equal(t, getPDURL(), "https://"+config.Account+".pagerduty.com", "Invalid url returned by getPDURL")
+}
+
+func TestBuidIcindentURL(t *testing.T) {
+	assert.Equal(t, buidIcindentURL(), "https://"+config.Account+".pagerduty.com/api/v1/incidents", "Invalid url returned by getPDURL")
+}
+
 // TestMain tests the main function
 /*
 func TestMain(t *testing.T) {
