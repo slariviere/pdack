@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"gopkg.in/h2non/gock.v0"
+
 	"github.com/BurntSushi/toml"
 	"github.com/stretchr/testify/assert"
 )
@@ -91,6 +93,26 @@ func TestBuidIcindentURL(t *testing.T) {
 
 func TestBuidAcknowledgeURL(t *testing.T) {
 	assert.Equal(t, buidAcknowledgeURL("123"), "https://"+config.Account+".pagerduty.com/api/v1/incidents/123/acknowledge", "Invalid url returned by buidAcknowledgeURL")
+}
+
+func TestGetAssignedPDIncidents(t *testing.T) {
+	defer gock.Off()
+
+	gock.New("https://"+config.Account+".pagerduty.com/api/v1/incidents?assigned_to_user="+config.UserID).
+		MatchHeader("Authorization", config.APIKey).
+		Reply(200).
+		BodyString(`{"incidents":[],"limit":100,"offset":0,"total":0}`)
+
+	assert.Equal(t, getAssignedPDIncidents(), true, "Response code is 200, getAssignedPDIncidents should return true")
+
+	gock.New("https://"+config.Account+".pagerduty.com/api/v1/incidents?assigned_to_user="+config.UserID).
+		MatchHeader("Authorization", config.APIKey).
+		Reply(500).
+		BodyString(`{"incidents":[],"limit":100,"offset":0,"total":0}`)
+
+	assert.Equal(t, getAssignedPDIncidents(), false, "Response code is 500, getAssignedPDIncidents should return false")
+
+	assert.Equal(t, gock.IsDone(), true, "")
 }
 
 // TestMain tests the main function
