@@ -129,28 +129,21 @@ func getPDURL() (url string) {
 	return "https://" + config.Account + ".pagerduty.com"
 }
 
-func buidAcknowledgeURL(id string) (incidentURL string) {
-	//https: //<subdomain>.pagerduty.com/api/v1/incidents/:id/acknowledge
-	resource := "/api/v1/incidents/" + id + "/acknowledge"
-	data := url.Values{}
-
+func buildURL(resource string, data url.Values) (builtURL string) {
 	u, _ := url.ParseRequestURI(getPDURL())
 	u.Path = resource
 	u.RawQuery = data.Encode()
-	urlStr := fmt.Sprintf("%v", u)
-	return urlStr
+	return fmt.Sprintf("%v", u)
+}
+
+func buidAcknowledgeURL(id string) (incidentURL string) {
+	return buildURL("/api/v1/incidents/"+id+"/acknowledge", url.Values{})
 }
 
 func buidIcindentURL() (incidentURL string) {
-	resource := "/api/v1/incidents"
 	data := url.Values{}
 	data.Add("assigned_to_user", config.UserID)
-
-	u, _ := url.ParseRequestURI(getPDURL())
-	u.Path = resource
-	u.RawQuery = data.Encode()
-	urlStr := fmt.Sprintf("%v", u)
-	return urlStr
+	return buildURL("/api/v1/incidents", data)
 }
 
 func acknowledgeIncicent(id string) (success bool) {
