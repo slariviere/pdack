@@ -105,14 +105,57 @@ func TestGetAssignedPDIncidents(t *testing.T) {
 
 	assert.Equal(t, getAssignedPDIncidents(), true, "Response code is 200, getAssignedPDIncidents should return true")
 
+	assert.Equal(t, gock.IsDone(), true, "")
+}
+
+func TestGetAssignedPDIncidentsRetriesFails(t *testing.T) {
+	pdRetryCount = 0
 	gock.New("https://"+config.Account+".pagerduty.com/api/v1/incidents?assigned_to_user="+config.UserID).
 		MatchHeader("Authorization", config.APIKey).
 		Reply(500).
 		BodyString(`{"incidents":[],"limit":100,"offset":0,"total":0}`)
 
-	assert.Equal(t, getAssignedPDIncidents(), false, "Response code is 500, getAssignedPDIncidents should return false")
+	gock.New("https://"+config.Account+".pagerduty.com/api/v1/incidents?assigned_to_user="+config.UserID).
+		MatchHeader("Authorization", config.APIKey).
+		Reply(500).
+		BodyString(`{"incidents":[],"limit":100,"offset":0,"total":0}`)
 
-	assert.Equal(t, gock.IsDone(), true, "")
+	gock.New("https://"+config.Account+".pagerduty.com/api/v1/incidents?assigned_to_user="+config.UserID).
+		MatchHeader("Authorization", config.APIKey).
+		Reply(500).
+		BodyString(`{"incidents":[],"limit":100,"offset":0,"total":0}`)
+
+	gock.New("https://"+config.Account+".pagerduty.com/api/v1/incidents?assigned_to_user="+config.UserID).
+		MatchHeader("Authorization", config.APIKey).
+		Reply(500).
+		BodyString(`{"incidents":[],"limit":100,"offset":0,"total":0}`)
+
+	assert.Equal(t, getAssignedPDIncidents(), false, "Response code is 500 too many times, getAssignedPDIncidents should return false")
+}
+
+func TestGetAssignedPDIncidentsRetriesSucceed(t *testing.T) {
+	pdRetryCount = 0
+	gock.New("https://"+config.Account+".pagerduty.com/api/v1/incidents?assigned_to_user="+config.UserID).
+		MatchHeader("Authorization", config.APIKey).
+		Reply(500).
+		BodyString(`{"incidents":[],"limit":100,"offset":0,"total":0}`)
+
+	gock.New("https://"+config.Account+".pagerduty.com/api/v1/incidents?assigned_to_user="+config.UserID).
+		MatchHeader("Authorization", config.APIKey).
+		Reply(500).
+		BodyString(`{"incidents":[],"limit":100,"offset":0,"total":0}`)
+
+	gock.New("https://"+config.Account+".pagerduty.com/api/v1/incidents?assigned_to_user="+config.UserID).
+		MatchHeader("Authorization", config.APIKey).
+		Reply(500).
+		BodyString(`{"incidents":[],"limit":100,"offset":0,"total":0}`)
+
+	gock.New("https://"+config.Account+".pagerduty.com/api/v1/incidents?assigned_to_user="+config.UserID).
+		MatchHeader("Authorization", config.APIKey).
+		Reply(200).
+		BodyString(`{"incidents":[],"limit":100,"offset":0,"total":0}`)
+
+	assert.Equal(t, getAssignedPDIncidents(), true, "Response code is 200 at the last moment, getAssignedPDIncidents should return true")
 }
 
 // TestMain tests the main function
