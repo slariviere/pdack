@@ -37,6 +37,8 @@ var pdRetryCount = 0
 var waitDelay = 1
 var config PagerDutyConfig
 
+var myPrivateExitFunction = os.Exit
+
 // Incident type
 type Incident struct {
 	Incidents []struct {
@@ -177,6 +179,7 @@ func acknowledgeIncicent(id string) (success bool) {
 }
 
 func getAssignedPDIncidents() (success bool) {
+
 	nbTriggered := 0
 	nbAcknowledged := 0
 	urlStr := buidIcindentURL()
@@ -200,6 +203,8 @@ func getAssignedPDIncidents() (success bool) {
 			nbTriggered++
 			if acknowledgeIncicent(curentIncident.ID) {
 				log.Printf("Incident %s (%s) has been Acknowledged\n", curentIncident.TriggerSummaryData.Subject, curentIncident.ID)
+			} else {
+				return false
 			}
 		} else if curentIncident.Status == "acknowledged" {
 			nbAcknowledged++
@@ -228,11 +233,13 @@ func main() {
 	if success {
 		for true {
 			if !getAssignedPDIncidents() {
-				os.Exit(1)
+				myPrivateExitFunction(1)
+				return
 			}
 			time.Sleep(time.Duration(config.RefreshDelay) * time.Second)
 		}
 	} else {
-		os.Exit(1)
+		myPrivateExitFunction(1)
+		return
 	}
 }
