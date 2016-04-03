@@ -29,13 +29,14 @@ var TestFiles = []struct {
 
 var b bytes.Buffer
 var traceBuffer = bufio.NewWriter(&b)
+var testExitCode = 0
 
 func init() {
 	log.SetOutput(traceBuffer)
 	waitDelay = 0
 	// Desactivate the os.Exit duing the tests
 	myPrivateExitFunction = func(c int) {
-		waitDelay = 0
+		testExitCode = c
 	}
 }
 
@@ -186,6 +187,7 @@ func TestMain(t *testing.T) {
 	os.Args = []string{os.Args[0], "--conf=pdack_sample.conf"}
 
 	pdRetryCount = 0
+	testExitCode = 0
 	gock.New("https://your_account.pagerduty.com/api/v1/incidents?assigned_to_user=XXXXXXX").
 		Reply(200).
 		BodyString(`{"incidents":[{"id":"PO7FKW9","incident_number":111661,"created_on":"2016-04-03T01:54:02Z","status":"triggered","pending_actions":[],"html_url":"https://your_account.pagerduty.com/incidents/PO7FKW9","incident_key":"66274f0746384df2ad51c04c2d4069bb","service":{"id":"P7C31P0","name":"TEST_SERVICE","html_url":"https://your_account.pagerduty.com/services/P7C31P0","deleted_at":null,"description":""},"escalation_policy":{"id":"P5W7JL2","name":"MO - Sebastien Lariviere","deleted_at":null},"assigned_to_user":{"id":"PJGAQGT","name":"S\u00e9bastien Larivi\u00e8re","email":"sebastien@lariviere.me","html_url":"https://your_account.pagerduty.com/users/PJGAQGT"},"trigger_summary_data":{"subject":"t"},"trigger_details_html_url":"https://your_account.pagerduty.com/incidents/PO7FKW9/log_entries/Q0P5VKOXNK4MSF","trigger_type":"web_trigger","last_status_change_on":"2016-04-03T01:54:02Z","last_status_change_by":null,"number_of_escalations":0,"assigned_to":[{"at":"2016-04-03T01:54:02Z","object":{"id":"PJGAQGT","name":"S\u00e9bastien Larivi\u00e8re","email":"sebastien@lariviere.me","html_url":"https://your_account.pagerduty.com/users/PJGAQGT","type":"user"}}],"urgency":"low"}],"limit":100,"offset":0,"total":1}`)
@@ -213,4 +215,14 @@ func TestMain(t *testing.T) {
 
 	main()
 	assert.Equal(t, gock.IsDone(), true, "Did not sent the planned request to PD")
+	assert.Equal(t, testExitCode, 1, "Program should have exited with code 1")
+}
+
+// TestMain tests the main function
+func TestMainBadConfigurationFile(t *testing.T) {
+	os.Args = []string{os.Args[0], "--conf=pdack_does_not_exists.conf"}
+	pdRetryCount = 0
+	testExitCode = 0
+	main()
+	assert.Equal(t, testExitCode, 1, "Program should have exited with code 1")
 }
