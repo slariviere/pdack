@@ -34,6 +34,7 @@ var PagerDutyConfigKeys = []string{
 var filename = flag.String("conf", "pdack_sample.conf", "Configuration file")
 var maxPDretries = 3
 var pdRetryCount = 0
+var waitDelay = 1
 var config PagerDutyConfig
 
 // Incident type
@@ -164,8 +165,8 @@ func acknowledgeIncicent(id string) (success bool) {
 		return true
 	}
 	if resp.StatusCode == 408 || resp.StatusCode == 500 {
-		// There was a recoverable error, retrying in 1 second
-		time.Sleep(time.Duration(1) * time.Second)
+		// There was a recoverable error, retrying in $waitDelay second
+		time.Sleep(time.Duration(waitDelay) * time.Second)
 		if pdRetryCount < maxPDretries {
 			pdRetryCount++
 			return acknowledgeIncicent(id)
@@ -210,8 +211,8 @@ func getAssignedPDIncidents() (success bool) {
 		return true
 	}
 	if resp.StatusCode == 408 || resp.StatusCode == 500 {
-		// There was a recoverable error, retrying in 1 second
-		time.Sleep(time.Duration(1) * time.Second)
+		// There was a recoverable error, retrying in $waitDelay second
+		time.Sleep(time.Duration(waitDelay) * time.Second)
 		if pdRetryCount < maxPDretries {
 			pdRetryCount++
 			return getAssignedPDIncidents()
