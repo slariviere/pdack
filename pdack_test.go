@@ -86,7 +86,11 @@ func TestGetPDURL(t *testing.T) {
 }
 
 func TestBuidIcindentURL(t *testing.T) {
-	assert.Equal(t, buidIcindentURL(), "https://"+config.Account+".pagerduty.com/api/v1/incidents?assigned_to_user=XXXXXXX", "Invalid url returned by getPDURL")
+	assert.Equal(t, buidIcindentURL(), "https://"+config.Account+".pagerduty.com/api/v1/incidents?assigned_to_user=XXXXXXX", "Invalid url returned by buidIcindentURL")
+}
+
+func TestBuidAcknowledgeURL(t *testing.T) {
+	assert.Equal(t, buidAcknowledgeURL("123"), "https://"+config.Account+".pagerduty.com/api/v1/incidents/123/acknowledge", "Invalid url returned by buidAcknowledgeURL")
 }
 
 // TestMain tests the main function
