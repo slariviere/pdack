@@ -31,7 +31,7 @@ var PagerDutyConfigKeys = []string{
 	"refreshDelay",
 }
 
-var filename = flag.String("conf", "pdack_sample.conf", "Configuration file")
+var filename = flag.String("conf", "pdack.conf", "Configuration file")
 var maxPDretries = 3
 var pdRetryCount = 0
 var waitDelay = 1
